@@ -80,7 +80,7 @@ def perform_request(query, data="None", extra_headers="None"):
 	print query["action"]
 	data["query"] = json.dumps(query)
 	writelog("perform_request::data = " + repr(data) + "\n")
-	writelog("perform_request::extra_headers = " + repr(extra_headers) + "\n")
+	#writelog("perform_request::extra_headers = " + repr(extra_headers) + "\n")
 	request = request_create(data, extra_headers)
 	response = urllib2.urlopen(request)
 	print query["action"] + " done!"
@@ -105,6 +105,8 @@ def receiveMakeOrders(user, post_data, extra_headers):
 	for shop_position in range(len(shop_data)):
 		shop = shop_data[shop_position]
 		truck_size = 2 * (shop["deliveryUpgrade"]+1)
+		if truck_size > 2 :
+			truck_size = 2
 		query = {"params":{"shop_position":shop_position,"secret":secret,"user":user},"action":"receiveOrder"}
 		response = perform_request(query, post_data, extra_headers)
 		
