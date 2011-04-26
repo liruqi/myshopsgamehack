@@ -114,9 +114,10 @@ def receiveMakeOrders(user, post_data, extra_headers):
 		for gid in shop["goods"]:
 			quantityPerPack  = eval(global_xml["goods"][gid])
 			quantity = quantityPerPack[0]
-			if len(quantityPerPack) == 5:
-				quantity = quantityPerPack[ shop["deliveryUpgrade"] ]
+			#if len(quantityPerPack) == 5:
+			#	quantity = quantityPerPack[ shop["deliveryUpgrade"] ]
 			upper = quantity * (3 + shop["deliveryUpgrade"])
+			print "%s: %d - %d - %d"%(gid, upper, shop["goods"][gid], quantity)
 			pack = (upper - shop["goods"][gid]) / quantity
 			if pack > 0:
 				sorted_goods.append((gid, pack))
