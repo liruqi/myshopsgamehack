@@ -42,6 +42,7 @@ import json
 import time
 import operator
 import zlib
+from xml.dom import minidom
 
 # Global constants
 const_timeout = 120
@@ -49,6 +50,7 @@ const_api_url = ('http://everybodyloves.myshopsgame.com/bridge.php')
 
 # Global var
 global_init = {}
+global_xml = {}
 
 log_file = open('myshops.log','a')
 writelog = log_file.write
@@ -105,12 +107,21 @@ def receiveMakeOrders(user, post_data, extra_headers):
 	for shop_position in range(len(shop_data)):
 		shop = shop_data[shop_position]
 		truck_size = 2 * (shop["deliveryUpgrade"]+1)
-		if truck_size > 2 :
-			truck_size = 2
 		query = {"params":{"shop_position":shop_position,"secret":secret,"user":user},"action":"receiveOrder"}
 		response = perform_request(query, post_data, extra_headers)
 		
-		sorted_goods = sorted(shop["goods"].iteritems(), key=operator.itemgetter(1))
+		sorted_goods = []
+		for gid in shop["goods"]:
+			quantityPerPack  = eval(global_xml["goods"][gid])
+			quantity = quantityPerPack[0]
+			if len(quantityPerPack) == 5:
+				quantity = quantityPerPack[ shop["deliveryUpgrade"] ]
+			upper = quantity * (3 + shop["deliveryUpgrade"])
+			pack = (upper - shop["goods"][gid]) / quantity
+			if pack > 0:
+				sorted_goods.append((gid, pack))
+		#sorted_goods = sorted(shop["goods"].iteritems(), key=operator.itemgetter(1))
+		print sorted_goods
 		order = {}
 		count = 0
 		for good in sorted_goods:
@@ -122,6 +133,14 @@ def receiveMakeOrders(user, post_data, extra_headers):
 		print order
 		query = {"params":{"shop_position":shop_position,"order":order,"user":user,"secret":secret},"action":"makeOrder"}
 		response = perform_request(query, post_data, extra_headers)
+
+def getXmlConfig(extra_headers):
+	dom = minidom.parse("goods.xml")
+	ele = dom.getElementsByTagName("good")
+	goods = {}
+	for i in ele:
+		goods[ i.getAttribute("id") ] = i.getAttribute("quantityPerPack")
+	global_xml["goods"] = goods
 
 def initGame(user, post_data, extra_headers):
 	query = {"params":{"take_rescue_delivery_from":"","user":1567749701},"action":"initGame"}
@@ -179,8 +198,12 @@ while True:
 #	print(header, extra_headers[header])
 query = json.loads(post_data["query"])
 user = 1567749701
+global global_xml
 
 try:
+	
+	getXmlConfig(extra_headers)
+	print global_xml
 	global_init = initGame(user,post_data, extra_headers)
 	visitFriends(user, post_data, extra_headers)
 	receiveMakeOrders(user, post_data, extra_headers)
