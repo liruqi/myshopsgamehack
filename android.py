@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright (c) 2006-2008 Ricardo Garcia Gonzalez
+# Copyright (c) 2011  liruqi@gmail.com
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
 # copy of this software and associated documentation files (the "Software"),
@@ -25,12 +25,10 @@
 # sale, use or other dealings in this Software without prior written
 # authorization.
 #
-# re-edited by liruqi@gmail.com
 
 import getpass
 import httplib
 import math
-import netrc
 import optparse
 import os
 import re
@@ -46,9 +44,6 @@ import operator
 import zlib
 
 # Global constants
-const_1k = 1024
-const_initial_block_size = 10 * const_1k
-const_epsilon = 0.0001
 const_timeout = 120
 const_api_url = ('http://everybodyloves.myshopsgame.com/bridge.php')
 
@@ -93,9 +88,10 @@ def perform_request(query, data="None", extra_headers="None"):
 	time.sleep(2)
 	return response
 
-def visitFriends(secret, user, post_data, extra_headers):
+def visitFriends(user, post_data, extra_headers):
 	if time.localtime().tm_hour != 15:
 		return	
+	secret = global_init["data"]["secret"]
 	friendsData = global_init["data"]["friendsData"]
 	for idx in friendsData:
 		friend =idx["user"]
@@ -103,7 +99,8 @@ def visitFriends(secret, user, post_data, extra_headers):
 		print (friend, query)
 		response = perform_request(query, post_data, extra_headers)
 
-def receiveMakeOrders(secret, user, post_data, extra_headers):
+def receiveMakeOrders(user, post_data, extra_headers):
+	secret = global_init["data"]["secret"]
 	shop_data = global_init["data"]["userData"]["shop_data"]
 	for shop_position in range(len(shop_data)):
 		shop = shop_data[shop_position]
@@ -124,7 +121,7 @@ def receiveMakeOrders(secret, user, post_data, extra_headers):
 		query = {"params":{"shop_position":shop_position,"order":order,"user":user,"secret":secret},"action":"makeOrder"}
 		response = perform_request(query, post_data, extra_headers)
 
-def init(user, post_data, extra_headers):
+def initGame(user, post_data, extra_headers):
 	query = {"params":{"take_rescue_delivery_from":"","user":1567749701},"action":"initGame"}
 	extra_headers["Accept-Encoding"] = ""
 	response = perform_request(query, post_data, extra_headers)
@@ -179,14 +176,12 @@ while True:
 #for header in extra_headers:
 #	print(header, extra_headers[header])
 query = json.loads(post_data["query"])
-#secret = query["params"]["secret"]
-secret = "0a619c03f5aad7b30d86733757772fa1"
 user = 1567749701
 
 try:
-	global_init = init(user,post_data, extra_headers)
-	visitFriends(secret, user, post_data, extra_headers)
-	receiveMakeOrders(secret, user, post_data, extra_headers)
+	global_init = initGame(user,post_data, extra_headers)
+	visitFriends(user, post_data, extra_headers)
+	receiveMakeOrders(user, post_data, extra_headers)
 
 #except (urllib2.URLError, ValueError, httplib.HTTPException, TypeError, socket.error):
 #	print('failed.\n')
