@@ -157,7 +157,7 @@ def getXmlConfig(extra_headers):
 	global_xml["goods"] = goods
 
 def initGame(user, post_data, extra_headers):
-	query = {"params":{"take_rescue_delivery_from":"","user":1567749701},"action":"initGame"}
+	query = {"params":{"take_rescue_delivery_from":"","user":user},"action":"initGame"}
 	extra_headers["Accept-Encoding"] = ""
 	response = perform_request(query, post_data, extra_headers)
 	#init_str = zlib.decompress(response.read())
