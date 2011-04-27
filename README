@@ -1,0 +1,9 @@
+This is a script to play MyShops game on Facebook: http://apps.facebook.com/myshopsgame/
+
+HOW TO USE:
+1. open my shops game chrome 
+2. right click => Inspect Element => Network tab
+3. delight a customer, then copy "Request Header" to a file "header", copy "POST Data" to file "data"
+4. python android.py data header
+
+any problem on this, tell me var mail: liruqi at gmail.com

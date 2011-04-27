@@ -87,7 +87,7 @@ def perform_request(query, data="None", extra_headers="None"):
 	response = urllib2.urlopen(request)
 	print query["action"] + " done!"
 	print response.info()
-	time.sleep(2)
+	time.sleep(1)
 	return response
 
 def visitFriends(user, post_data, extra_headers):
