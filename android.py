@@ -91,7 +91,7 @@ def perform_request(query, data="None", extra_headers="None"):
 	return response
 
 def visitFriends(user, post_data, extra_headers):
-	if time.localtime().tm_hour != 15:
+	if time.localtime().tm_hour != 15 and time.localtime().tm_hour != 16:
 		return	
 	secret = global_init["data"]["secret"]
 	friendsData = global_init["data"]["friendsData"]
@@ -139,14 +139,15 @@ def makeLoveToCustomer(user, post_data, extra_headers):
 	secret = global_init["data"]["secret"]
 	customer_data = global_init["data"]["userData"]["customer_data"]
 	for cid in customer_data:
+		if (global_init["data"]["userData"]["user_love"] <= 0):
+			break
 		if customer_data[cid]["sat"] < 32 and cid > 300:
 			query = {"action":"delightCustomer","params":{"user":user,"customer_id":cid,"secret":secret}}
 			print "delightCustomer: "+cid
 			response = perform_request(query, post_data, extra_headers)
 			global_init["data"]["userData"]["user_love"] -= 1
 			print "love remaining: %d" % global_init["data"]["userData"]["user_love"]
-			if (global_init["data"]["userData"]["user_love"] <= 0):
-				break
+			
 			
 def getXmlConfig(extra_headers):
 	dom = minidom.parse("goods.xml")
@@ -204,17 +205,18 @@ extra_headers = {
 	"content-type" : "application/x-www-form-urlencoded",
 	"referer" : "http://d13qpkenb3q1p6.cloudfront.net/r2526a/game/MyStreetLoaderR.swf"
 }
-"""
-sample_header_file = open(cmdl_args[1])
-while True:
-	key = sample_header_file.readline()
-	if not key:
-		break
-	key = key[:-2]
-	value = sample_header_file.readline()
-	#print key + " => " + value
-	extra_headers[key] = value[:-1]
-"""
+
+if (len(cmdl_args)>1):
+	sample_header_file = open(cmdl_args[1])
+	while True:
+		key = sample_header_file.readline()
+		if not key:
+			break
+		key = key[:-2]
+		value = sample_header_file.readline()
+		print key + " => " + value
+		extra_headers[key] = value[:-1]
+
 #print extra_headers 
 #for header in extra_headers:
 #	print(header, extra_headers[header])
