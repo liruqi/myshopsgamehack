@@ -189,14 +189,22 @@ while True:
 	key = post_data_file.readline()
 	if not key:
 		break
-	key = key[:-2]
+	if (key[-2:-1] != ":") :
+		key, value = key.split(":",1)
+	else :
+		key = key[:-2]
+		value = post_data_file.readline()
+	print (key, value)
 	#if (key[:2] != "fb"):
 	#	continue
-	value = post_data_file.readline()
 	#print key + " => " + value
 	post_data[key] = value
 
-extra_headers = {}
+extra_headers = {
+	"content-type" : "application/x-www-form-urlencoded",
+	"referer" : "http://d13qpkenb3q1p6.cloudfront.net/r2526a/game/MyStreetLoaderR.swf"
+}
+"""
 sample_header_file = open(cmdl_args[1])
 while True:
 	key = sample_header_file.readline()
@@ -206,7 +214,7 @@ while True:
 	value = sample_header_file.readline()
 	#print key + " => " + value
 	extra_headers[key] = value[:-1]
-
+"""
 #print extra_headers 
 #for header in extra_headers:
 #	print(header, extra_headers[header])
