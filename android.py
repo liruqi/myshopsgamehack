@@ -135,6 +135,19 @@ def receiveMakeOrders(user, post_data, extra_headers):
 		query = {"params":{"shop_position":shop_position,"order":order,"user":user,"secret":secret},"action":"makeOrder"}
 		response = perform_request(query, post_data, extra_headers)
 
+def makeLoveToCustomer(user, post_data, extra_headers):
+	secret = global_init["data"]["secret"]
+	customer_data = global_init["data"]["userData"]["customer_data"]
+	
+	for cid in customer_data:
+		if customer_data[cid]["sat"] < 8:
+			query = {"action":"delightCustomer","params":{"user":user,"customer_id":cid,"secret":secret}}
+			print "delightCustomer: "+cid
+			response = perform_request(query, post_data, extra_headers)
+			global_init["data"]["userData"]["user_love"] -= 1
+			if (global_init["data"]["userData"]["user_love"] <= 0):
+				break
+			
 def getXmlConfig(extra_headers):
 	dom = minidom.parse("goods.xml")
 	ele = dom.getElementsByTagName("good")
@@ -202,10 +215,10 @@ user = 1567749701
 global global_xml
 
 try:
-	
 	getXmlConfig(extra_headers)
 	print global_xml
 	global_init = initGame(user,post_data, extra_headers)
+	makeLoveToCustomer(user, post_data, extra_headers)
 	visitFriends(user, post_data, extra_headers)
 	receiveMakeOrders(user, post_data, extra_headers)
 
