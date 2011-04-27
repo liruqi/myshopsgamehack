@@ -49,8 +49,8 @@ const_timeout = 120
 const_api_url = ('http://everybodyloves.myshopsgame.com/bridge.php')
 
 # Global var
-global_init = {}
-global_xml = {}
+global global_init 
+global global_xml
 
 log_file = open('myshops.log','a')
 writelog = log_file.write
@@ -211,10 +211,11 @@ while True:
 #for header in extra_headers:
 #	print(header, extra_headers[header])
 query = json.loads(post_data["query"])
-user = 1567749701
-global global_xml
+user = query["params"]["user"]
+print user
 
 try:
+	global_xml = {}
 	getXmlConfig(extra_headers)
 	print global_xml
 	global_init = initGame(user,post_data, extra_headers)
