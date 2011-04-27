@@ -138,13 +138,13 @@ def receiveMakeOrders(user, post_data, extra_headers):
 def makeLoveToCustomer(user, post_data, extra_headers):
 	secret = global_init["data"]["secret"]
 	customer_data = global_init["data"]["userData"]["customer_data"]
-	
 	for cid in customer_data:
-		if customer_data[cid]["sat"] < 8:
+		if customer_data[cid]["sat"] < 32 and cid > 300:
 			query = {"action":"delightCustomer","params":{"user":user,"customer_id":cid,"secret":secret}}
 			print "delightCustomer: "+cid
 			response = perform_request(query, post_data, extra_headers)
 			global_init["data"]["userData"]["user_love"] -= 1
+			print "love remaining: %d" % global_init["data"]["userData"]["user_love"]
 			if (global_init["data"]["userData"]["user_love"] <= 0):
 				break
 			
