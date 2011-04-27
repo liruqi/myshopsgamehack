@@ -179,7 +179,7 @@ writelog(str(cmdl_opts) + str(cmdl_args) + "\n")
 socket.setdefaulttimeout(const_timeout)
 
 # Get video URL
-if len(cmdl_args) != 2:
+if len(cmdl_args) < 1:
 	cmdl_parser.print_help()
 	sys.exit('\n')
 data_sample = cmdl_args[0]
