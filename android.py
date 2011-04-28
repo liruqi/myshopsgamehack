@@ -190,12 +190,14 @@ while True:
 	key = post_data_file.readline()
 	if not key:
 		break
-	if (key[-2:-1] != ":") :
+	key = key.strip()
+
+	if (key[-1:] != ":") :
+		print "=>" + key
 		key, value = key.split(":",1)
 	else :
-		key = key[:-2]
+		key = key[:-1]
 		value = post_data_file.readline()
-	print (key, value)
 	#if (key[:2] != "fb"):
 	#	continue
 	#print key + " => " + value
