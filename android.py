@@ -60,6 +60,33 @@ def error_advice_exit(error_text):
 	sys.stderr.write('Error: %s.\n' % error_text)
 	sys.exit('\n')
 
+def getMaxLove(id):
+    levelMap = {
+        1 : 1, 
+        2 : 1,
+        3 : 1,
+        4 : 1,
+        5 : 2,
+        6 : 2,
+        7 : 2,
+        8 : 3,
+        9 : 3,
+        10 : 4,
+    }
+    if id < 100:
+        return 0
+    if id < 200:
+        return [8,12,20,32][levelMap[id % 100]]
+    if id < 300:
+        return [32,40,48,60][levelMap[id % 100]]
+    if id < 400:
+        return [20,30,40,50][levelMap[id % 100]]
+    if id < 600:
+        return [24,30,40,50][levelMap[id % 100]]
+    if id < 800:
+        return [20,25,40,50][levelMap[id % 100]]
+	return 50
+
 # Wrapper to create custom requests with typical headers
 def request_create(post_data, extra_headers=None, url = const_api_url):
 	retval = urllib2.Request(url, urllib.urlencode(post_data))
@@ -136,18 +163,25 @@ def receiveMakeOrders(user, post_data, extra_headers):
 		response = perform_request(query, post_data, extra_headers)
 
 def makeLoveToCustomer(user, post_data, extra_headers):
+	print "makeLoveToCustomer!"
 	secret = global_init["data"]["secret"]
 	customer_data = global_init["data"]["userData"]["customer_data"]
-	for cid in customer_data:
+	cidList = customer_data.keys()
+	cidList.sort()
+	cidList.reverse()
+	
+	for cid in cidList:
 		if (global_init["data"]["userData"]["user_love"] <= 0):
+			print global_init["data"]["userData"]
 			break
-		if customer_data[cid]["sat"] < 32 and cid > 300:
+		while customer_data[cid]["sat"] < getMaxLove(int(cid)):
 			query = {"action":"delightCustomer","params":{"user":user,"customer_id":cid,"secret":secret}}
 			print "delightCustomer: "+cid
 			response = perform_request(query, post_data, extra_headers)
 			global_init["data"]["userData"]["user_love"] -= 1
+			customer_data[cid]["sat"] += 1
 			print "love remaining: %d" % global_init["data"]["userData"]["user_love"]
-			
+	exit()
 			
 def getXmlConfig(extra_headers):
 	dom = minidom.parse("goods.xml")
