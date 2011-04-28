@@ -62,16 +62,16 @@ def error_advice_exit(error_text):
 
 def getMaxLove(id):
     levelMap = {
-        1 : 1, 
-        2 : 1,
-        3 : 1,
-        4 : 1,
-        5 : 2,
-        6 : 2,
-        7 : 2,
-        8 : 3,
+        1 : 0, 
+        2 : 0,
+        3 : 0,
+        4 : 0,
+        5 : 1,
+        6 : 1,
+        7 : 1,
+        8 : 2,
         9 : 3,
-        10 : 4,
+        10 : 3,
     }
     if id < 100:
         return 0
@@ -172,16 +172,14 @@ def makeLoveToCustomer(user, post_data, extra_headers):
 	
 	for cid in cidList:
 		if (global_init["data"]["userData"]["user_love"] <= 0):
-			print global_init["data"]["userData"]
 			break
-		while customer_data[cid]["sat"] < getMaxLove(int(cid)):
+		while customer_data[cid]["sat"] < getMaxLove(int(cid)) and global_init["data"]["userData"]["user_love"]:
 			query = {"action":"delightCustomer","params":{"user":user,"customer_id":cid,"secret":secret}}
 			print "delightCustomer: "+cid
 			response = perform_request(query, post_data, extra_headers)
 			global_init["data"]["userData"]["user_love"] -= 1
 			customer_data[cid]["sat"] += 1
 			print "love remaining: %d" % global_init["data"]["userData"]["user_love"]
-	exit()
 			
 def getXmlConfig(extra_headers):
 	dom = minidom.parse("goods.xml")
