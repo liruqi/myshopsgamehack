@@ -169,17 +169,15 @@ def makeLoveToCustomer(user, post_data, extra_headers):
 	cidList = customer_data.keys()
 	cidList.sort()
 	cidList.reverse()
-	
-	for cid in cidList:
-		if (global_init["data"]["userData"]["user_love"] <= 0):
-			break
-		if customer_data[cid]["sat"] < getMaxLove(int(cid)) and global_init["data"]["userData"]["user_love"]:
-			query = {"action":"delightCustomer","params":{"user":user,"customer_id":cid,"secret":secret}}
-			print "delightCustomer: "+cid
-			response = perform_request(query, post_data, extra_headers)
-			global_init["data"]["userData"]["user_love"] -= 1
-			customer_data[cid]["sat"] += 1
-			print "love remaining: %d" % global_init["data"]["userData"]["user_love"]
+	while (global_init["data"]["userData"]["user_love"] > 0):
+		for cid in cidList:
+			if customer_data[cid]["sat"] < getMaxLove(int(cid)) and global_init["data"]["userData"]["user_love"]:
+				query = {"action":"delightCustomer","params":{"user":user,"customer_id":cid,"secret":secret}}
+				print "delightCustomer: "+cid
+				response = perform_request(query, post_data, extra_headers)
+				global_init["data"]["userData"]["user_love"] -= 1
+				customer_data[cid]["sat"] += 1
+				print "love remaining: %d" % global_init["data"]["userData"]["user_love"]
 			
 def getXmlConfig(extra_headers):
 	dom = minidom.parse("goods.xml")
