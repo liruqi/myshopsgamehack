@@ -173,7 +173,7 @@ def makeLoveToCustomer(user, post_data, extra_headers):
 	for cid in cidList:
 		if (global_init["data"]["userData"]["user_love"] <= 0):
 			break
-		while customer_data[cid]["sat"] < getMaxLove(int(cid)) and global_init["data"]["userData"]["user_love"]:
+		if customer_data[cid]["sat"] < getMaxLove(int(cid)) and global_init["data"]["userData"]["user_love"]:
 			query = {"action":"delightCustomer","params":{"user":user,"customer_id":cid,"secret":secret}}
 			print "delightCustomer: "+cid
 			response = perform_request(query, post_data, extra_headers)
