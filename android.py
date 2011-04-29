@@ -70,7 +70,7 @@ def getMaxLove(id):
         6 : 1,
         7 : 1,
         8 : 2,
-        9 : 3,
+        9 : 2,
         10 : 3,
     }
     if id < 100:
@@ -84,7 +84,7 @@ def getMaxLove(id):
     if id < 600:
         return [24,30,40,50][levelMap[id % 100]]
     if id < 800:
-        return [20,25,40,50][levelMap[id % 100]]
+        return [20,25,30,40][levelMap[id % 100]]
 	return 50
 
 # Wrapper to create custom requests with typical headers
@@ -173,7 +173,7 @@ def makeLoveToCustomer(user, post_data, extra_headers):
 		for cid in cidList:
 			if customer_data[cid]["sat"] < getMaxLove(int(cid)) and global_init["data"]["userData"]["user_love"]:
 				query = {"action":"delightCustomer","params":{"user":user,"customer_id":cid,"secret":secret}}
-				print "delightCustomer: "+cid
+				print ("delightCustomer: "+cid +" sat: %d, max: %d") % (customer_data[cid]["sat"], getMaxLove(int(cid)))
 				response = perform_request(query, post_data, extra_headers)
 				global_init["data"]["userData"]["user_love"] -= 1
 				customer_data[cid]["sat"] += 1
