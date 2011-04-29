@@ -51,6 +51,7 @@ const_api_url = ('http://everybodyloves.myshopsgame.com/bridge.php')
 # Global var
 global global_init 
 global global_xml
+global global_opts
 
 log_file = open('myshops.log','a')
 writelog = log_file.write
@@ -84,21 +85,13 @@ def getMaxLove(id):
     if id < 600:
         return [24,30,40,50][levelMap[id % 100]]
     if id < 800:
-        return [20,25,30,40][levelMap[id % 100]]
+        return [0,15,15,20,20,25,25,25,30,30,35][id % 100]
 	return 50
 
 # Wrapper to create custom requests with typical headers
 def request_create(post_data, extra_headers=None, url = const_api_url):
 	retval = urllib2.Request(url, urllib.urlencode(post_data))
-	# Try to mimic Firefox, at least a little bit
-	"""
-	retval.add_header('Accept', '*/*')
-	retval.add_header('Accept-Charset', 'UTF-8,*;q=0.5')
-	retval.add_header('Accept-Language', 'en-us,en;q=0.5')
-	retval.add_header('Referer', 'http://d13qpkenb3q1p6.cloudfront.net/r2526/game/MyStreetLoaderR.swf')
-	retval.add_header('User-Agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.205 Safari/534.16')
-	retval.add_header('content-type', 'application/x-www-form-urlencoded')
-	"""
+	
 	if extra_headers is not None:
 		for header in extra_headers:
 			retval.add_header(header, extra_headers[header])
@@ -171,13 +164,15 @@ def makeLoveToCustomer(user, post_data, extra_headers):
 	cidList.reverse()
 	while (global_init["data"]["userData"]["user_love"] > 0):
 		for cid in cidList:
-			if customer_data[cid]["sat"] < getMaxLove(int(cid)) and global_init["data"]["userData"]["user_love"]:
+			while customer_data[cid]["sat"] < getMaxLove(int(cid)) and global_init["data"]["userData"]["user_love"]:
 				query = {"action":"delightCustomer","params":{"user":user,"customer_id":cid,"secret":secret}}
 				print ("delightCustomer: "+cid +" sat: %d, max: %d") % (customer_data[cid]["sat"], getMaxLove(int(cid)))
 				response = perform_request(query, post_data, extra_headers)
 				global_init["data"]["userData"]["user_love"] -= 1
 				customer_data[cid]["sat"] += 1
 				print "love remaining: %d" % global_init["data"]["userData"]["user_love"]
+				if not global_opts.crazy:
+					break
 			
 def getXmlConfig(extra_headers):
 	dom = minidom.parse("goods.xml")
@@ -202,9 +197,9 @@ cmdl_version = '2008.03.22'
 cmdl_parser = optparse.OptionParser(usage=cmdl_usage, version=cmdl_version, conflict_handler='resolve')
 cmdl_parser.add_option('-h', '--help', action='help', help='print this help text and exit')
 cmdl_parser.add_option('-v', '--version', action='version', help='print program version and exit')
-cmdl_parser.add_option('-x', '--header', dest='header', metavar='header', help='http header')
+cmdl_parser.add_option('-c', '--crazy', action="store_true", dest='crazy', help='crazy mode', default=False)
 (cmdl_opts, cmdl_args) = cmdl_parser.parse_args()
-writelog(str(cmdl_opts) + str(cmdl_args) + "\n")
+print (str(cmdl_opts) + str(cmdl_args) + "\n")
 
 # Set socket timeout
 socket.setdefaulttimeout(const_timeout)
@@ -258,6 +253,7 @@ print user
 
 try:
 	global_xml = {}
+	global_opts = cmdl_opts
 	getXmlConfig(extra_headers)
 	print global_xml
 	global_init = initGame(user,post_data, extra_headers)
