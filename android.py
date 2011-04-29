@@ -164,6 +164,11 @@ def makeLoveToCustomer(user, post_data, extra_headers):
 	cidList.reverse()
 	while (global_init["data"]["userData"]["user_love"] > 0):
 		for cid in cidList:
+			if int(cid) > int(global_opts.upper):
+				continue
+			if int(cid) < int(global_opts.lower):
+				continue
+
 			while customer_data[cid]["sat"] < getMaxLove(int(cid)) and global_init["data"]["userData"]["user_love"]:
 				query = {"action":"delightCustomer","params":{"user":user,"customer_id":cid,"secret":secret}}
 				print ("delightCustomer: "+cid +" sat: %d, max: %d") % (customer_data[cid]["sat"], getMaxLove(int(cid)))
@@ -198,6 +203,9 @@ cmdl_parser = optparse.OptionParser(usage=cmdl_usage, version=cmdl_version, conf
 cmdl_parser.add_option('-h', '--help', action='help', help='print this help text and exit')
 cmdl_parser.add_option('-v', '--version', action='version', help='print program version and exit')
 cmdl_parser.add_option('-c', '--crazy', action="store_true", dest='crazy', help='crazy mode', default=False)
+cmdl_parser.add_option('-u', '--upper-limit', dest='upper', help='set upper limit of customer id', default=10000)
+cmdl_parser.add_option('-l', '--lower-limit', dest='lower', help='set lower limit of customer id', default=0)
+
 (cmdl_opts, cmdl_args) = cmdl_parser.parse_args()
 print (str(cmdl_opts) + str(cmdl_args) + "\n")
 
