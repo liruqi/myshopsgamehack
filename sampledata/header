@@ -1,0 +1,22 @@
+Accept:
+*/*
+Accept-Charset:
+UTF-8,*;q=0.5
+Accept-Encoding:
+gzip,deflate,sdch
+Accept-Language:
+en-US,en;q=0.8
+Connection:
+keep-alive
+Content-Length:
+801
+Cookie:
+fbsetting_8dad679b7b5135a5706188b1ba84dc1f=%7B%22connectState%22%3A1%2C%22oneLineStorySetting%22%3A3%2C%22shortStorySetting%22%3A3%2C%22inFacebook%22%3Atrue%7D; base_domain_8dad679b7b5135a5706188b1ba84dc1f=myshopsgame.com; 8dad679b7b5135a5706188b1ba84dc1f=086e31589ecfbfd2c1db24da30bd82c2; 8dad679b7b5135a5706188b1ba84dc1f_user=100002363478300; 8dad679b7b5135a5706188b1ba84dc1f_ss=Of_6UESfhAjEwOp1DHbdMw__; 8dad679b7b5135a5706188b1ba84dc1f_session_key=2.qZL4iBKD9vHjdhlLQR_Njw__.3600.1304964000.1-100002363478300; 8dad679b7b5135a5706188b1ba84dc1f_expires=1304964000
+Host:
+everybodyloves.myshopsgame.com
+Referer:
+http://d13qpkenb3q1p6.cloudfront.net/r2526a/game/MyStreetLoaderR.swf
+User-Agent:
+Mozilla/5.0 (X11; Linux i686) AppleWebKit/534.24 (KHTML, like Gecko) Ubuntu/11.04 Chromium/11.0.696.57 Chrome/11.0.696.57 Safari/534.24
+content-type:
+application/x-www-form-urlencoded
