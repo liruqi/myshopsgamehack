@@ -58,143 +58,129 @@ writelog = log_file.write
 
 # Print error message, followed by standard advice information, and then exit
 def error_advice_exit(error_text):
-	sys.stderr.write('Error: %s.\n' % error_text)
-	sys.exit('\n')
+    sys.stderr.write('Error: %s.\n' % error_text)
+    sys.exit('\n')
 
-def getMaxLove(id):
-    levelMap = {
-        1 : 0, 
-        2 : 0,
-        3 : 0,
-        4 : 0,
-        5 : 1,
-        6 : 1,
-        7 : 1,
-        8 : 2,
-        9 : 2,
-        10 : 3,
-    }
-    if id < 100:
-        return 0
-    if id < 200:
-        return [8,12,20,32][levelMap[id % 100]]
-    if id < 300:
-        return [32,40,48,60][levelMap[id % 100]]
-    if id < 400:
-        return [20,30,40,50][levelMap[id % 100]]
-    if id < 600:
-        return [24,30,40,50][levelMap[id % 100]]
-    if id < 800:
-        return [0,15,15,20,20,25,25,25,30,30,35][id % 100]
-	return 50
+def getMaxLove(id, level):
+    levelMap = [1,2,2,4]
+    if level > 3:
+        level = 3
+    love = levelMap[level] * global_xml["customer"][id]
+    print (id, level, love)
+    return love
 
 # Wrapper to create custom requests with typical headers
 def request_create(post_data, extra_headers=None, url = const_api_url):
-	retval = urllib2.Request(url, urllib.urlencode(post_data))
-	
-	if extra_headers is not None:
-		for header in extra_headers:
-			retval.add_header(header, extra_headers[header])
-	return retval
+    retval = urllib2.Request(url, urllib.urlencode(post_data))
+    
+    if extra_headers is not None:
+        for header in extra_headers:
+            retval.add_header(header, extra_headers[header])
+    return retval
 
 # Perform a request, process headers and return response
 def perform_request(query, data="None", extra_headers="None"):
-	print query["action"]
-	data["query"] = json.dumps(query)
-	writelog("perform_request::data = " + repr(data) + "\n")
-	#writelog("perform_request::extra_headers = " + repr(extra_headers) + "\n")
-	request = request_create(data, extra_headers)
-	response = urllib2.urlopen(request)
-	print query["action"] + " done!"
-	print response.info()
-	time.sleep(1)
-	return response
+    print query["action"]
+    data["query"] = json.dumps(query)
+    #writelog("perform_request::data = " + repr(data) + "\n")
+    #writelog("perform_request::extra_headers = " + repr(extra_headers) + "\n")
+    request = request_create(data, extra_headers)
+    response = urllib2.urlopen(request)
+    print query["action"] + " done!"
+    print response.info()
+    time.sleep(1)
+    return response
 
 def visitFriends(user, post_data, extra_headers):
-	if time.localtime().tm_hour != 15 and time.localtime().tm_hour != 16:
-		return	
-	secret = global_init["data"]["secret"]
-	friendsData = global_init["data"]["friendsData"]
-	for idx in friendsData:
-		friend =idx["user"]
-		query = {"action":"getFriendData", "params":{"from_home":1, "user":user,"secret":secret, "friend":friend}}
-		print (friend, query)
-		response = perform_request(query, post_data, extra_headers)
+    secret = global_init["data"]["secret"]
+    friendsData = global_init["data"]["friendsData"]
+    for idx in friendsData:
+        friend =idx["user"]
+        query = {"action":"getFriendData", "params":{"from_home":1, "user":user,"secret":secret, "friend":friend}}
+        print (friend, query)
+        response = perform_request(query, post_data, extra_headers)
 
 def receiveMakeOrders(user, post_data, extra_headers):
-	secret = global_init["data"]["secret"]
-	shop_data = global_init["data"]["userData"]["shop_data"]
-	for shop_position in range(len(shop_data)):
-		shop = shop_data[shop_position]
-		truck_size = 2 * (shop["deliveryUpgrade"]+1)
-		query = {"params":{"shop_position":shop_position,"secret":secret,"user":user},"action":"receiveOrder"}
-		response = perform_request(query, post_data, extra_headers)
-		
-		sorted_goods = []
-		for gid in shop["goods"]:
-			quantityPerPack  = eval(global_xml["goods"][gid])
-			quantity = quantityPerPack[0]
-			#if len(quantityPerPack) == 5:
-			#	quantity = quantityPerPack[ shop["deliveryUpgrade"] ]
-			upper = quantity * (3 + shop["deliveryUpgrade"])
-			print "%s: %d - %d - %d"%(gid, upper, shop["goods"][gid], quantity)
-			pack = (upper - shop["goods"][gid]) / quantity
-			if pack > 0:
-				sorted_goods.append((gid, pack))
-		#sorted_goods = sorted(shop["goods"].iteritems(), key=operator.itemgetter(1))
-		print sorted_goods
-		order = {}
-		count = 0
-		for good in sorted_goods:
-			order[good[0]] = 1
-			count += 1
-			if count >= truck_size:
-				break
-		print "orders: shop %s" % (shop_position)
-		print order
-		query = {"params":{"shop_position":shop_position,"order":order,"user":user,"secret":secret},"action":"makeOrder"}
-		response = perform_request(query, post_data, extra_headers)
+    secret = global_init["data"]["secret"]
+    shop_data = global_init["data"]["userData"]["shop_data"]
+    for shop_position in range(len(shop_data)):
+        shop = shop_data[shop_position]
+        truck_size = 2 * (shop["deliveryUpgrade"]+1)
+        query = {"params":{"shop_position":shop_position,"secret":secret,"user":user},"action":"receiveOrder"}
+        response = perform_request(query, post_data, extra_headers)
+        
+        sorted_goods = []
+        for gid in shop["goods"]:
+            quantityPerPack  = eval(global_xml["goods"][gid])
+            quantity = quantityPerPack[0]
+            #if len(quantityPerPack) == 5:
+            #    quantity = quantityPerPack[ shop["deliveryUpgrade"] ]
+            upper = quantity * (3 + shop["deliveryUpgrade"])
+            print "%s: %d - %d - %d"%(gid, upper, shop["goods"][gid], quantity)
+            pack = (upper - shop["goods"][gid]) / quantity
+            if pack > 0:
+                sorted_goods.append((gid, pack))
+        #sorted_goods = sorted(shop["goods"].iteritems(), key=operator.itemgetter(1))
+        print sorted_goods
+        order = {}
+        count = 0
+        for good in sorted_goods:
+            order[good[0]] = 1
+            count += 1
+            if count >= truck_size:
+                break
+        print "orders: shop %s" % (shop_position)
+        print order
+        query = {"params":{"shop_position":shop_position,"order":order,"user":user,"secret":secret},"action":"makeOrder"}
+        response = perform_request(query, post_data, extra_headers)
 
 def makeLoveToCustomer(user, post_data, extra_headers):
-	print "makeLoveToCustomer!"
-	secret = global_init["data"]["secret"]
-	customer_data = global_init["data"]["userData"]["customer_data"]
-	cidList = customer_data.keys()
-	cidList.sort()
-	cidList.reverse()
-	while (global_init["data"]["userData"]["user_love"] > 0):
-		for cid in cidList:
-			if int(cid) > int(global_opts.upper):
-				continue
-			if int(cid) < int(global_opts.lower):
-				continue
+    print "makeLoveToCustomer!"
+    secret = global_init["data"]["secret"]
+    customer_data = global_init["data"]["userData"]["customer_data"]
+    cidList = customer_data.keys()
+    cidList.sort()
+    cidList.reverse()
+    while (global_init["data"]["userData"]["user_love"] > 0):
+        for cid in cidList:
+            if int(cid) > int(global_opts.upper):
+                continue
+            if int(cid) < int(global_opts.lower):
+                continue
 
-			while customer_data[cid]["sat"] < getMaxLove(int(cid)) and global_init["data"]["userData"]["user_love"]:
-				query = {"action":"delightCustomer","params":{"user":user,"customer_id":cid,"secret":secret}}
-				print ("delightCustomer: "+cid +" sat: %d, max: %d") % (customer_data[cid]["sat"], getMaxLove(int(cid)))
-				response = perform_request(query, post_data, extra_headers)
-				global_init["data"]["userData"]["user_love"] -= 1
-				customer_data[cid]["sat"] += 1
-				print "love remaining: %d" % global_init["data"]["userData"]["user_love"]
-				if not global_opts.crazy:
-					break
-			
+            while customer_data[cid]["sat"] < getMaxLove(int(cid), customer_data[cid]["level"]) and global_init["data"]["userData"]["user_love"]:
+                query = {"action":"delightCustomer","params":{"user":user,"customer_id":cid,"secret":secret}}
+                print ("delightCustomer: "+cid +" sat: %d") % (customer_data[cid]["sat"])
+                response = perform_request(query, post_data, extra_headers)
+                global_init["data"]["userData"]["user_love"] -= 1
+                customer_data[cid]["sat"] += 1
+                print "love remaining: %d" % global_init["data"]["userData"]["user_love"]
+                if not global_opts.crazy:
+                    break
+            
 def getXmlConfig(extra_headers):
-	dom = minidom.parse("goods.xml")
-	ele = dom.getElementsByTagName("good")
-	goods = {}
-	for i in ele:
-		goods[ i.getAttribute("id") ] = i.getAttribute("quantityPerPack")
-	global_xml["goods"] = goods
+    dom = minidom.parse("goods.xml")
+    ele = dom.getElementsByTagName("good")
+    goods = {}
+    for i in ele:
+        goods[ i.getAttribute("id") ] = i.getAttribute("quantityPerPack")
+    global_xml["goods"] = goods
+
+    dom = minidom.parse("customers.xml")
+    ele = dom.getElementsByTagName("customer")
+    sat = {}
+    for i in ele:
+        sat[ int(i.getAttribute("id")) ] = int(i.getAttribute("maxSatisfaction"))
+    global_xml["customer"] = sat
 
 def initGame(user, post_data, extra_headers):
-	query = {"params":{"take_rescue_delivery_from":"","user":user},"action":"initGame"}
-	extra_headers["Accept-Encoding"] = ""
-	response = perform_request(query, post_data, extra_headers)
-	#init_str = zlib.decompress(response.read())
-	init_str = (response.read())
-	writelog("initGame: " + init_str)
-	return json.loads(init_str)
+    query = {"params":{"take_rescue_delivery_from":"","user":user},"action":"initGame"}
+    extra_headers["Accept-Encoding"] = ""
+    response = perform_request(query, post_data, extra_headers)
+    #init_str = zlib.decompress(response.read())
+    init_str = (response.read())
+    writelog("initGame: " + init_str)
+    return json.loads(init_str)
 
 # Create the command line options parser and parse command line
 cmdl_usage = 'usage: %prog [options] data_sample'
@@ -214,66 +200,66 @@ socket.setdefaulttimeout(const_timeout)
 
 # Get video URL
 if len(cmdl_args) < 1:
-	cmdl_parser.print_help()
-	sys.exit('\n')
+    cmdl_parser.print_help()
+    sys.exit('\n')
 data_sample = cmdl_args[0]
 post_data_file = open(data_sample)
 post_data = {}
 while True:
-	key = post_data_file.readline()
-	if not key:
-		break
-	key = key.strip()
+    key = post_data_file.readline()
+    if not key:
+        break
+    key = key.strip()
 
-	if (key[-1:] != ":") :
-		print "=>" + key
-		key, value = key.split(":",1)
-	else :
-		key = key[:-1]
-		value = post_data_file.readline()
-	#if (key[:2] != "fb"):
-	#	continue
-	#print key + " => " + value
-	post_data[key] = value
+    if (key[-1:] != ":") :
+        print "=>" + key
+        key, value = key.split(":",1)
+    else :
+        key = key[:-1]
+        value = post_data_file.readline()
+    #if (key[:2] != "fb"):
+    #    continue
+    #print key + " => " + value
+    post_data[key] = value
 
 extra_headers = {
-	"content-type" : "application/x-www-form-urlencoded",
-	"referer" : "http://d13qpkenb3q1p6.cloudfront.net/r2526a/game/MyStreetLoaderR.swf"
+    "content-type" : "application/x-www-form-urlencoded",
+    "referer" : "http://d13qpkenb3q1p6.cloudfront.net/r2526a/game/MyStreetLoaderR.swf"
 }
 
 if (len(cmdl_args)>1):
-	sample_header_file = open(cmdl_args[1])
-	while True:
-		key = sample_header_file.readline()
-		if not key:
-			break
-		key = key[:-2]
-		value = sample_header_file.readline()
-		print key + " => " + value
-		extra_headers[key] = value[:-1]
+    sample_header_file = open(cmdl_args[1])
+    while True:
+        key = sample_header_file.readline()
+        if not key:
+            break
+        key = key[:-2]
+        value = sample_header_file.readline()
+        print key + " => " + value
+        extra_headers[key] = value[:-1]
 
 #print extra_headers 
 #for header in extra_headers:
-#	print(header, extra_headers[header])
+#    print(header, extra_headers[header])
 query = json.loads(post_data["query"])
 user = query["params"]["user"]
 print user
 
 try:
-	global_xml = {}
-	global_opts = cmdl_opts
-	getXmlConfig(extra_headers)
-	print global_xml
-	global_init = initGame(user,post_data, extra_headers)
-	makeLoveToCustomer(user, post_data, extra_headers)
-	visitFriends(user, post_data, extra_headers)
-	receiveMakeOrders(user, post_data, extra_headers)
+    global_xml = {}
+    global_opts = cmdl_opts
+    getXmlConfig(extra_headers)
+    print global_xml
+    global_init = initGame(user,post_data, extra_headers)
+    makeLoveToCustomer(user, post_data, extra_headers)
+    visitFriends(user, post_data, extra_headers)
+    receiveMakeOrders(user, post_data, extra_headers)
 
 #except (urllib2.URLError, ValueError, httplib.HTTPException, TypeError, socket.error):
-#	print('failed.\n')
+#    print('failed.\n')
 
 except KeyboardInterrupt:
-	sys.exit('\n')
+    sys.exit('\n')
 
 # Finish
 log_file.close()
