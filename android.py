@@ -141,16 +141,20 @@ def makeLoveToCustomer(user, post_data, extra_headers):
     cidList = customer_data.keys()
     cidList.sort()
     cidList.reverse()
-    while (global_init["data"]["userData"]["user_love"] > 0):
+    if (global_init["data"]["userData"]["user_love"] > 0):
         for cid in cidList:
+            print cid, customer_data[cid]
             if int(cid) > int(global_opts.upper):
                 continue
             if int(cid) < int(global_opts.lower):
                 continue
+            if customer_data[cid]["level"] >= 3:
+                print "level is full"
+                continue
 
             while customer_data[cid]["sat"] < getMaxLove(int(cid), customer_data[cid]["level"]) and global_init["data"]["userData"]["user_love"]:
                 query = {"action":"delightCustomer","params":{"user":user,"customer_id":cid,"secret":secret}}
-                print ("delightCustomer: "+cid +" sat: %d") % (customer_data[cid]["sat"])
+                print ("delightCustomer: "+cid +" sat: %d level: %d") % (customer_data[cid]["sat"], customer_data[cid]["level"])
                 response = perform_request(query, post_data, extra_headers)
                 global_init["data"]["userData"]["user_love"] -= 1
                 customer_data[cid]["sat"] += 1
@@ -251,6 +255,7 @@ try:
     getXmlConfig(extra_headers)
     print global_xml
     global_init = initGame(user,post_data, extra_headers)
+
     makeLoveToCustomer(user, post_data, extra_headers)
     visitFriends(user, post_data, extra_headers)
     receiveMakeOrders(user, post_data, extra_headers)
