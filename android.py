@@ -131,8 +131,9 @@ def receiveMakeOrders(user, post_data, extra_headers):
                 break
         print "orders: shop %s" % (shop_position)
         print order
-        query = {"params":{"shop_position":shop_position,"order":order,"user":user,"secret":secret},"action":"makeOrder"}
-        response = perform_request(query, post_data, extra_headers)
+        if order:
+            query = {"params":{"shop_position":shop_position,"order":order,"user":user,"secret":secret},"action":"makeOrder"}
+            response = perform_request(query, post_data, extra_headers)
 
 def makeLoveToCustomer(user, post_data, extra_headers):
     print "makeLoveToCustomer!"
