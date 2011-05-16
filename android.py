@@ -62,9 +62,9 @@ def error_advice_exit(error_text):
     sys.exit('\n')
 
 def getMaxLove(id, level):
-    levelMap = [1,2,2,4]
-    if level > 3:
-        level = 3
+    levelMap = [1,2,4]
+    if level > 2:
+        level = 2
     love = levelMap[level] * global_xml["customer"][id]
     print (id, level, love)
     return love
@@ -152,9 +152,9 @@ def makeLoveToCustomer(user, post_data, extra_headers):
                 print "level is full"
                 continue
 
+            print ("try delightCustomer: "+cid +" sat: %d level: %d max: %d") % (customer_data[cid]["sat"], customer_data[cid]["level"], getMaxLove(int(cid), customer_data[cid]["level"]))
             while customer_data[cid]["sat"] < getMaxLove(int(cid), customer_data[cid]["level"]) and global_init["data"]["userData"]["user_love"]:
                 query = {"action":"delightCustomer","params":{"user":user,"customer_id":cid,"secret":secret}}
-                print ("delightCustomer: "+cid +" sat: %d level: %d") % (customer_data[cid]["sat"], customer_data[cid]["level"])
                 response = perform_request(query, post_data, extra_headers)
                 global_init["data"]["userData"]["user_love"] -= 1
                 customer_data[cid]["sat"] += 1
