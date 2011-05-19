@@ -142,14 +142,15 @@ def makeLoveToCustomer(user, post_data, extra_headers):
     cidList = customer_data.keys()
     cidList.sort()
     cidList.reverse()
-    if (global_init["data"]["userData"]["user_love"] > 0):
+    levelLimit = 3
+    while (global_init["data"]["userData"]["user_love"] > 0):
         for cid in cidList:
             print cid, customer_data[cid]
             if int(cid) > int(global_opts.upper):
                 continue
             if int(cid) < int(global_opts.lower):
                 continue
-            if customer_data[cid]["level"] >= 3:
+            if customer_data[cid]["level"] >= levelLimit:
                 print "level is full"
                 continue
 
@@ -162,7 +163,8 @@ def makeLoveToCustomer(user, post_data, extra_headers):
                 print "love remaining: %d" % global_init["data"]["userData"]["user_love"]
                 if not global_opts.crazy:
                     break
-            
+        levelLimit += 1
+    
 def getXmlConfig(extra_headers):
     dom = minidom.parse("goods.xml")
     ele = dom.getElementsByTagName("good")
