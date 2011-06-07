@@ -106,8 +106,14 @@ def receiveMakeOrders(user, post_data, extra_headers):
     for shop_position in range(len(shop_data)):
         shop = shop_data[shop_position]
         truck_size = 2 * (shop["deliveryUpgrade"]+1)
-        query = {"params":{"shop_position":shop_position,"secret":secret,"user":user},"action":"receiveOrder"}
-        response = perform_request(query, post_data, extra_headers)
+        
+        if "friendDeliveryPending" in shop:
+            query = {"params":{"shop_position":shop_position,"secret":secret,"user":user},"action":"receiveFriendDelivery"}
+            response = perform_request(query, post_data, extra_headers)
+
+        if "order" in shop:
+            query = {"params":{"shop_position":shop_position,"secret":secret,"user":user},"action":"receiveOrder"}
+            response = perform_request(query, post_data, extra_headers)
         
         sorted_goods = []
         for gid in shop["goods"]:
@@ -120,7 +126,7 @@ def receiveMakeOrders(user, post_data, extra_headers):
             pack = (upper - shop["goods"][gid]) / quantity
             if pack > 0:
                 sorted_goods.append((gid, pack))
-        #sorted_goods = sorted(shop["goods"].iteritems(), key=operator.itemgetter(1))
+        #sorted_goods = sorted(sorted_goods.iteritems(), key=operator.itemgetter(1))
         print sorted_goods
         order = {}
         count = 0
@@ -186,7 +192,7 @@ def initGame(user, post_data, extra_headers):
     response = perform_request(query, post_data, extra_headers)
     #init_str = zlib.decompress(response.read())
     init_str = (response.read())
-    writelog("initGame: " + init_str)
+    writelog("initGame: " + init_str + "\n")
     return json.loads(init_str)
 
 # Create the command line options parser and parse command line
