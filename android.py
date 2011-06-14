@@ -115,7 +115,7 @@ def receiveMakeOrders(user, post_data, extra_headers):
             query = {"params":{"shop_position":shop_position,"secret":secret,"user":user},"action":"receiveOrder"}
             response = perform_request(query, post_data, extra_headers)
         
-        sorted_goods = []
+        sorted_goods = {}
         for gid in shop["goods"]:
             quantityPerPack  = eval(global_xml["goods"][gid])
             quantity = quantityPerPack[0]
@@ -125,8 +125,13 @@ def receiveMakeOrders(user, post_data, extra_headers):
             print "%s: %d - %d - %d"%(gid, upper, shop["goods"][gid], quantity)
             pack = (upper - shop["goods"][gid]) / quantity
             if pack > 0:
-                sorted_goods.append((gid, pack))
-        #sorted_goods = sorted(sorted_goods.iteritems(), key=operator.itemgetter(1))
+                sorted_goods[gid] = pack
+        if (len(sorted_goods) <= 0):
+            continue
+
+        sorted_goods = sorted(sorted_goods.iteritems(), key=operator.itemgetter(1))
+        sorted_goods.reverse()
+
         print sorted_goods
         order = {}
         count = 0
