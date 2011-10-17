@@ -161,9 +161,15 @@ def makeLoveToCustomer(user, post_data, extra_headers):
             if customer_data[cid]["level"] >= levelLimit:
                 print "level is full"
                 continue
+            
+            familyLevel = 64
+            for x in cidList:
+                if (int(x)/100) == (int(cid) /100):
+                    if customer_data[x]["level"] < familyLevel:
+                        familyLevel = customer_data[x]["level"]
 
-            print ("try delightCustomer: "+cid +" sat: %d level: %d max: %d") % (customer_data[cid]["sat"], customer_data[cid]["level"], getMaxLove(int(cid), customer_data[cid]["level"]))
-            while customer_data[cid]["sat"] < getMaxLove(int(cid), customer_data[cid]["level"]) and global_init["data"]["userData"]["user_love"]:
+            print ("try delightCustomer: "+cid +" sat: %d family level: %d max: %d") % (customer_data[cid]["sat"], familyLevel, getMaxLove(int(cid), familyLevel))
+            while customer_data[cid]["sat"] < getMaxLove(int(cid), familyLevel) and global_init["data"]["userData"]["user_love"]:
                 query = {"action":"delightCustomer","params":{"user":user,"customer_id":cid}}
                 response = perform_request(query, post_data, extra_headers)
                 global_init["data"]["userData"]["user_love"] -= 1
