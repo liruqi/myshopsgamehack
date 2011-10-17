@@ -92,27 +92,25 @@ def perform_request(query, data="None", extra_headers="None"):
     return response
 
 def visitFriends(user, post_data, extra_headers):
-    secret = global_init["data"]["secret"]
     friendsData = global_init["data"]["friendsData"]
     for idx in friendsData:
         friend =idx["user"]
-        query = {"action":"getFriendData", "params":{"from_home":1, "user":user,"secret":secret, "friend":friend}}
+        query = {"action":"getFriendData", "params":{"from_home":1, "user":user, "friend":friend}}
         print (friend, query)
         response = perform_request(query, post_data, extra_headers)
 
 def receiveMakeOrders(user, post_data, extra_headers):
-    secret = global_init["data"]["secret"]
     shop_data = global_init["data"]["userData"]["shop_data"]
     for shop_position in range(len(shop_data)):
         shop = shop_data[shop_position]
         truck_size = 2 * (shop["deliveryUpgrade"]+1)
         
         if "friendDeliveryPending" in shop:
-            query = {"params":{"shop_position":shop_position,"secret":secret,"user":user},"action":"receiveFriendDelivery"}
+            query = {"params":{"shop_position":shop_position,"user":user},"action":"receiveFriendDelivery"}
             response = perform_request(query, post_data, extra_headers)
 
         if "order" in shop:
-            query = {"params":{"shop_position":shop_position,"secret":secret,"user":user},"action":"receiveOrder"}
+            query = {"params":{"shop_position":shop_position,"user":user},"action":"receiveOrder"}
             response = perform_request(query, post_data, extra_headers)
         
         sorted_goods = {}
@@ -143,12 +141,11 @@ def receiveMakeOrders(user, post_data, extra_headers):
         print "orders: shop %s" % (shop_position)
         print order
         if order:
-            query = {"params":{"shop_position":shop_position,"order":order,"user":user,"secret":secret},"action":"makeOrder"}
+            query = {"params":{"shop_position":shop_position,"order":order,"user":user},"action":"makeOrder"}
             response = perform_request(query, post_data, extra_headers)
 
 def makeLoveToCustomer(user, post_data, extra_headers):
     print "makeLoveToCustomer!"
-    secret = global_init["data"]["secret"]
     customer_data = global_init["data"]["userData"]["customer_data"]
     cidList = customer_data.keys()
     cidList.sort()
@@ -167,7 +164,7 @@ def makeLoveToCustomer(user, post_data, extra_headers):
 
             print ("try delightCustomer: "+cid +" sat: %d level: %d max: %d") % (customer_data[cid]["sat"], customer_data[cid]["level"], getMaxLove(int(cid), customer_data[cid]["level"]))
             while customer_data[cid]["sat"] < getMaxLove(int(cid), customer_data[cid]["level"]) and global_init["data"]["userData"]["user_love"]:
-                query = {"action":"delightCustomer","params":{"user":user,"customer_id":cid,"secret":secret}}
+                query = {"action":"delightCustomer","params":{"user":user,"customer_id":cid}}
                 response = perform_request(query, post_data, extra_headers)
                 global_init["data"]["userData"]["user_love"] -= 1
                 customer_data[cid]["sat"] += 1
