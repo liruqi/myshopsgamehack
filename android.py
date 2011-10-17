@@ -46,7 +46,7 @@ from xml.dom import minidom
 
 # Global constants
 const_timeout = 120
-const_api_url = ('http://everybodyloves.myshopsgame.com/bridge.php')
+const_api_url = ('https://everybodyloves.myshopsgame.com/bridge.php')
 
 # Global var
 global global_init 
@@ -80,15 +80,16 @@ def request_create(post_data, extra_headers=None, url = const_api_url):
 
 # Perform a request, process headers and return response
 def perform_request(query, data="None", extra_headers="None"):
-    print query["action"]
     data["query"] = json.dumps(query)
+    data["query"] = string.join(data["query"].split(' '), '')
+    print query["action"] + " - " + data["query"]
     #writelog("perform_request::data = " + repr(data) + "\n")
     #writelog("perform_request::extra_headers = " + repr(extra_headers) + "\n")
     request = request_create(data, extra_headers)
     response = urllib2.urlopen(request)
     print query["action"] + " done!"
-    print response.info()
-    time.sleep(1)
+    #print response.info()
+    time.sleep(0.1)
     return response
 
 def visitFriends(user, post_data, extra_headers):
@@ -138,7 +139,7 @@ def receiveMakeOrders(user, post_data, extra_headers):
             count += 1
             if count >= truck_size:
                 break
-        print "orders: shop %s" % (shop_position)
+        print "orders: shop %s, truck_size %d" % (shop_position, truck_size)
         print order
         if order:
             query = {"params":{"shop_position":shop_position,"order":order,"user":user},"action":"makeOrder"}
