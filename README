@@ -1,8 +1,8 @@
-This is a script to play MyShops game on Facebook: http://apps.facebook.com/myshopsgame/
+This is a script to play MyShops game on Facebook: https://apps.facebook.com/myshopsgame/
 
 HOW TO USE:
-1. open my shops game chrome 
-2. right click => Inspect Element => Network tab
+1. open my shops game in chrome 
+2. right click => Inspect Element => Network tab (=> Other sub tab)
 3. delight a customer, then copy "Request Header" to a file "header", copy "POST Data" to file "data"
 4. python android.py data header
 
@@ -11,5 +11,5 @@ any problem on this, tell me var mail: liruqi at gmail.com
 TODO:
 Stop adding customer sat after 3 rounds(all goods should be unlocked then) [DONE]
 Add more stupid usage introduction.
-Open the shop is shop is building.
+Open the shop when shop is building.
 
