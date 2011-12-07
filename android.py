@@ -114,6 +114,9 @@ def receiveMakeOrders(user, post_data, extra_headers):
             query = {"params":{"shop_position":shop_position,"user":user},"action":"receiveOrder"}
             response = perform_request(query, post_data, extra_headers)
         
+        query = {"params":{"shop_position":shop_position,"user":user,"happy_customers_percentage":100},"action":"sendRush"}
+        response = perform_request(query, post_data, extra_headers)
+
         sorted_goods = {}
         for gid in shop["goods"]:
             quantityPerPack  = eval(global_xml["goods"][gid])
