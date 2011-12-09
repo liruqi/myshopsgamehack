@@ -227,9 +227,11 @@ socket.setdefaulttimeout(const_timeout)
 if len(cmdl_args) < 1:
     cmdl_parser.print_help()
     sys.exit('\n')
-data_sample = cmdl_args[0]
-post_data_file = open(data_sample)
+user = cmdl_args[0]
+
 post_data = {}
+"""
+post_data_file = open(data_sample)
 while True:
     key = post_data_file.readline()
     if not key:
@@ -246,7 +248,7 @@ while True:
     #    continue
     #print key + " => " + value
     post_data[key] = value
-
+"""
 extra_headers = {
     "content-type" : "application/x-www-form-urlencoded",
     "referer" : "http://d13qpkenb3q1p6.cloudfront.net/r2526a/game/MyStreetLoaderR.swf"
@@ -266,8 +268,8 @@ if (len(cmdl_args)>1):
 #print extra_headers 
 #for header in extra_headers:
 #    print(header, extra_headers[header])
-query = json.loads(post_data["query"])
-user = query["params"]["user"]
+#query = json.loads(post_data["query"])
+#user = query["params"]["user"]
 print user
 
 try:
