@@ -1,22 +1,12 @@
-Accept:
-*/*
-Accept-Charset:
-UTF-8,*;q=0.5
-Accept-Encoding:
-gzip,deflate,sdch
-Accept-Language:
-en-US,en;q=0.8
-Connection:
-keep-alive
-Content-Length:
-801
-Cookie:
-fbsetting_8dad679b7b5135a5706188b1ba84dc1f=%7B%22connectState%22%3A1%2C%22oneLineStorySetting%22%3A3%2C%22shortStorySetting%22%3A3%2C%22inFacebook%22%3Atrue%7D; base_domain_8dad679b7b5135a5706188b1ba84dc1f=myshopsgame.com; 8dad679b7b5135a5706188b1ba84dc1f=086e31589ecfbfd2c1db24da30bd82c2; 8dad679b7b5135a5706188b1ba84dc1f_user=100002363478300; 8dad679b7b5135a5706188b1ba84dc1f_ss=Of_6UESfhAjEwOp1DHbdMw__; 8dad679b7b5135a5706188b1ba84dc1f_session_key=2.qZL4iBKD9vHjdhlLQR_Njw__.3600.1304964000.1-100002363478300; 8dad679b7b5135a5706188b1ba84dc1f_expires=1304964000
-Host:
-everybodyloves.myshopsgame.com
-Referer:
-http://d13qpkenb3q1p6.cloudfront.net/r2526a/game/MyStreetLoaderR.swf
-User-Agent:
-Mozilla/5.0 (X11; Linux i686) AppleWebKit/534.24 (KHTML, like Gecko) Ubuntu/11.04 Chromium/11.0.696.57 Chrome/11.0.696.57 Safari/534.24
-content-type:
-application/x-www-form-urlencoded
+Accept:*/*
+Accept-Charset:ISO-8859-1,utf-8;q=0.7,*;q=0.3
+Accept-Encoding:gzip,deflate,sdch
+Accept-Language:en-US,en;q=0.8
+Connection:keep-alive
+Content-Length:289
+Content-Type:application/x-www-form-urlencoded
+Cookie:PHPSESSID=7f6892hp5ceptmttciduukqmg1; fbsr_123837014322698=l-TddysubvEZFLEdES6Og2tqa23kNbrgayJB5oOnKJw.eyJhbGdvcml0aG0iOiJITUFDLVNIQTI1NiIsImNvZGUiOiJBUUJ1TEpJOVpncTNnZmhjMlJ1M3o3cWZDQnd1dmRrU1lnY0VWbndoZXdzWHVRNGNKX0V1NVRLZ3BPNFZfVmUwV2czRnUycmVlUDlKaE9wZGcxOFdqUGpXQ0c3YU92TTU2V19acUtvakdiU2VwMTBIWVh5QVlfWjhXRFNVb2diSUh4X1pocGhzSnJjRE1DQmZacmNfVEE3d010ZFBoSDhWcU1KVzFBNEd6UVp6YUZNWldrbXNydUFjc05WbE50UGJKWXpDVFlCOGNXYjlLSUtCYWVEWkNBSzIiLCJpc3N1ZWRfYXQiOjEzNjExNzIzMjEsInVzZXJfaWQiOiIxMDAwMDI0MDY5ODIyNjIifQ; __utma=176154430.1252220732.1361171199.1361171199.1361171199.1; __utmb=176154430.12.7.1361172332441; __utmc=176154430; __utmz=176154430.1361171199.1.1.utmcsr=apps.facebook.com|utmccn=(referral)|utmcmd=referral|utmcct=/myshopsgame/
+Host:everybodyloves.myshopsgame.com
+Origin:https://d13qpkenb3q1p6.cloudfront.net
+Referer:https://d13qpkenb3q1p6.cloudfront.net/r4779/game/MyStreetGameR.swf
+User-Agent:Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.5 Safari/537.31
